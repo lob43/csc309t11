@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }) => {
                 }
                 
                 const userData = await user.json()
-                console.log(userData.user)
                 setUser(userData.user)
             }
         }
@@ -81,12 +80,13 @@ export const AuthProvider = ({ children }) => {
             body: JSON.stringify({username,password})
         })
 
+        const data = await res.json()
+
 
         if(Math.floor(res.status/100) == 4){
-            return res.statusText
+            return data.message
         }
 
-        const data = await res.json()
 
 
         const user = await fetch(`${BACKEND_URL}/user/me`, {
@@ -96,15 +96,17 @@ export const AuthProvider = ({ children }) => {
                 "Authorization": `Bearer ${data.token}`
             }
         })
+        
+        const userData = await user.json()
+
 
         if(Math.floor(user.status/100) == 4){
-            return user.statusText
+            return userData.message
         }
 
 
         localStorage.setItem("token", data.token)
 
-        const userData = await user.json()
 
         setUser(userData.user)
 
@@ -128,9 +130,11 @@ export const AuthProvider = ({ children }) => {
             body: JSON.stringify(userData)
         })
 
+        const data = await res.json()
+
 
         if(Math.floor(res.status/100) == 4){
-            return res.statusText
+            return data.message
         }
         
         navigate("/success");
