@@ -19,12 +19,35 @@ export const AuthProvider = ({ children }) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
     useEffect(()=>{
-        if(!localStorage.getItem("token")){
-            setUser(null)
-        }
-    })
 
-    console.log(BACKEND_URL)
+        const checkAuth = async()=>{
+            // console.log(localStorage.getItem("token"))
+            if(!localStorage.getItem("token")){
+                setUser(null)
+            }else{
+                const user = await fetch(`${BACKEND_URL}/user/me`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+                
+                if(Math.floor(user.status/100) == 4){
+                    return user.statusText
+                }
+                
+                const userData = await user.json()
+                console.log(userData.user)
+                setUser(userData.user)
+            }
+        }
+
+        checkAuth()
+        
+    },[])
+
+
 
     /*
      * Logout the currently authenticated user.
@@ -83,7 +106,7 @@ export const AuthProvider = ({ children }) => {
 
         const userData = await user.json()
 
-        setUser(userData)
+        setUser(userData.user)
 
         navigate("/profile");
     };
