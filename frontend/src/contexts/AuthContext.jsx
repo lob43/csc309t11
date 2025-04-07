@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState} from 'react';
+import React, { createContext, useContext, useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
@@ -17,6 +17,12 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
 
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+
+    useEffect(()=>{
+        if(!localStorage.getItem("token")){
+            setUser(null)
+        }
+    })
 
     console.log(BACKEND_URL)
 
