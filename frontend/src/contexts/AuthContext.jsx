@@ -57,7 +57,6 @@ export const AuthProvider = ({ children }) => {
 
         const data = await res.json()
 
-        localStorage.setItem("token", data.token)
 
         const user = await fetch(`${BACKEND_URL}/user/me`, {
             method: "GET",
@@ -70,6 +69,9 @@ export const AuthProvider = ({ children }) => {
         if(Math.floor(user.status/100) == 4){
             return user.statusText
         }
+
+
+        localStorage.setItem("token", data.token)
 
         const userData = await user.json()
 
